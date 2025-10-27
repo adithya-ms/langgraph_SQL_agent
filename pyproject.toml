@@ -1,0 +1,19 @@
+[project]
+name = "vesper"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.120.1",
+    "langchain>=1.0.2",
+    "langchain-openai>=1.0.1",
+    "langgraph>=1.0.1",
+    "langsmith>=0.4.38",
+    "matplotlib>=3.10.7",
+    "pandas>=2.3.3",
+    "psycopg2>=2.9.11",
+    "psycopg2-binary>=2.9.11",
+    "seaborn>=0.13.2",
+    "sqlalchemy>=2.0.44",
+]
