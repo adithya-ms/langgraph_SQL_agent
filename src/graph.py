@@ -28,11 +28,12 @@ def build_graph():
     # Graph
     builder = StateGraph(MessagesState)
 
-    # Define nodes: these do the work
+    #Node 1: Assistant Node that uses the SQLAgent to process messages
     builder.add_node("assistant", SQLAgent.node)
+    #Node 2: Tool Node to run SQL queries
     builder.add_node("tools", ToolNode(SQLAgent.tools))
 
-    # Define edges: these determine how the control flow moves
+    # Edges
     builder.add_edge(START, "assistant")
     builder.add_conditional_edges(
         "assistant",
@@ -47,7 +48,7 @@ def build_graph():
     compiled_graph = builder.compile(checkpointer=memory) 
     return compiled_graph
 
-def run_graph():
+def test_graph():
     compiled_graph = build_graph()
     # Specify a thread
     config = {"configurable": {"thread_id": "1"},
@@ -64,4 +65,4 @@ def run_graph():
 
 
 if __name__ == "__main__":
-    run_graph()
+    test_graph()

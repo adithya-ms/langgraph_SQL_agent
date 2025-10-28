@@ -25,11 +25,8 @@ class ChatResponse(BaseModel):
     summary: Optional[str] = None
     messages_count: int
 
-class ThreadResponse(BaseModel):
-    thread_id: str
-    message: str
 
-# In-memory store for active threads (in production, use a database)
+# Simple dictionary for active threads (in production, use a database)
 active_threads: Dict[str, Dict[str, Any]] = {}
 
 @app.get("/")
@@ -44,8 +41,11 @@ async def chat(request: ChatRequest):
     """
     try:
         # Generate thread_id if not provided
+        user_id = request.user_id
         thread_id = request.thread_id or str(uuid.uuid4())
         
+        #easy handling - to avoid multi-user sessions for now
+        thread_id = user_id + "_" + thread_id
         # Create config with thread_id for memory management
         config = {
             "configurable": {"thread_id": thread_id}
@@ -71,7 +71,7 @@ async def chat(request: ChatRequest):
         else:
             response_content = "I apologize, but I couldn't generate a response."
         
-        # Store thread info
+        # "last_interaction": request.message, is optional as graph has memory
         active_threads[thread_id] = {
             "last_interaction": request.message,
             "message_count": len(messages)
@@ -79,6 +79,7 @@ async def chat(request: ChatRequest):
         
         return ChatResponse(
             response=response_content,
+            user_id=thread_id.split("_")[0],
             thread_id=thread_id,
             summary=result.get("summary"),
             messages_count=len(messages)
@@ -86,23 +87,6 @@ async def chat(request: ChatRequest):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing chat: {str(e)}")
-
-@app.post("/new-thread", response_model=ThreadResponse)
-async def create_new_thread():
-    """
-    Create a new conversation thread
-    """
-    thread_id = str(uuid.uuid4())
-    active_threads[thread_id] = {
-        "last_interaction": None,
-        "message_count": 0
-    }
-    
-    return ThreadResponse(
-        thread_id=thread_id,
-        message="New conversation thread created"
-    )
-
 
 
 if __name__ == "__main__":

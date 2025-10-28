@@ -1,4 +1,4 @@
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 
 class BaseAgent:
     '''
@@ -23,16 +23,18 @@ class ChatAgent(BaseAgent):
 
         self.system_message = system_message
     def run(self, messages):
-        # process chat messages with llm and tools
-        pass
+        raise NotImplementedError("ChatAgent run method not implemented yet.")
 
     def node(self, state):
         return {"messages": [self.llm.invoke([self.system_message] + state["messages"])]}
 
-if __name__ == "__main__":
+def test_agent():
     llm = ChatOpenAI(model="gpt-3.5-turbo")
     tools = [] 
     system_message = "You are a helpful assistant."
     agent = ChatAgent(llm, tools, system_message)
-    sample_messages = []  # Populate with actual messages
+    sample_messages = [] 
     agent.run(sample_messages)
+
+if __name__ == "__main__":
+    test_agent()
