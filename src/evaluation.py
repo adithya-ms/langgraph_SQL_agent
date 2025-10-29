@@ -35,28 +35,11 @@ test_queries = [
 ]
 
 # Expected data ranges for validation:
-expected_ranges = {
-    "butter_zuivelnl": {
-        "date_range": ("2001-04-23", "2025-10-22"),
-        "price_range": (2100, 8100),  # approximate
-        "peak_period": "2024-09-18"  # around 8100
-    },
-    "milk_belgium": {
-        "date_range": ("1977-01-01", "2025-09-01"),
-        "price_range": (167, 590),  # approximate
-        "covid_impact": "2020-04-01"  # significant drop
-    },
-    "butter_eex_eu": {
-        "date_range": ("2010-05-31", "2025-10-22"),
-        "price_range": (1600, 8100),  # approximate
-        "peak_period": "2024-09-25"  # around 8100
-    },
-    "smp_eex_eu": {
-        "date_range": ("2010-05-31", "2018-11-07"),
-        "price_range": (1250, 3300),  # approximate
-        "peak_period": "2013-08-31"  # around 3300
-    }
-}
+expected_results = [8100.0,
+                    318.9,
+                    2477.64,
+                    
+                    ]
 
 def run_chatbot_tests(chat_function):
     """

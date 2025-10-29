@@ -96,10 +96,25 @@ def summarize_conversation(state: SQLState):
     messages_for_summary = state["messages"] + [HumanMessage(content=summary_message)]
     response = summary_llm.invoke(messages_for_summary)
     
-    # Keep the last 6 messages to preserve tool call/response pairs
-    # This is safer than trying to parse tool call chains
+    # Find a safe cutoff point that doesn't break tool call/response pairs
+    messages = state["messages"]
     messages_to_keep = 6
-    delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-messages_to_keep]]
+    
+    # Work backwards to find a safe cutoff that doesn't break tool chains
+    safe_cutoff = len(messages) - messages_to_keep
+    
+    # Ensure we don't cut in the middle of a tool call chain
+    for i in range(safe_cutoff, len(messages)):
+        if i > 0 and hasattr(messages[i], 'role') and messages[i].role == 'tool':
+            # This is a tool response, check if the previous message has tool_calls
+            prev_msg = messages[i-1]
+            if hasattr(prev_msg, 'tool_calls') and prev_msg.tool_calls:
+                # Found a tool call/response pair, keep both
+                safe_cutoff = min(safe_cutoff, i-1)
+                break
+    
+    # Only delete up to the safe cutoff point
+    delete_messages = [RemoveMessage(id=m.id) for m in messages[:max(0, safe_cutoff)]]
     
     return {
         "summary": response.content, 
