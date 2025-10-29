@@ -17,11 +17,13 @@ app = FastAPI(title="SQL Chatbot API", version="1.0.0")
 class ChatRequest(BaseModel):
     message: str
     thread_id: Optional[str] = None
+    user_id: Optional[str] = None
     recursion_limit: Optional[int] = 15
 
 class ChatResponse(BaseModel):
     response: str
     thread_id: str
+    user_id: str
     summary: Optional[str] = None
     messages_count: int
 
@@ -41,14 +43,15 @@ async def chat(request: ChatRequest):
     """
     try:
         # Generate thread_id if not provided
-        user_id = request.user_id
+        user_id = request.user_id or str(uuid.uuid4())
         thread_id = request.thread_id or str(uuid.uuid4())
         
         #easy handling - to avoid multi-user sessions for now
-        thread_id = user_id + "_" + thread_id
+        combined_id = user_id + "_" + thread_id
+
         # Create config with thread_id for memory management
         config = {
-            "configurable": {"thread_id": thread_id}
+            "configurable": {"thread_id": combined_id},
         }
         
         # Create input message
@@ -72,14 +75,14 @@ async def chat(request: ChatRequest):
             response_content = "I apologize, but I couldn't generate a response."
         
         # "last_interaction": request.message, is optional as graph has memory
-        active_threads[thread_id] = {
+        active_threads[combined_id] = {
             "last_interaction": request.message,
             "message_count": len(messages)
         }
         
         return ChatResponse(
             response=response_content,
-            user_id=thread_id.split("_")[0],
+            user_id=user_id,
             thread_id=thread_id,
             summary=result.get("summary"),
             messages_count=len(messages)

@@ -1,7 +1,7 @@
 import requests
 
 # Simple function to chat with the API
-def chat_with_bot(message, thread_id=None):
+def chat_with_bot(message, user_id=None, thread_id=None):
     url = "http://localhost:8000/chat"
     data = {"message": message}
     
@@ -15,14 +15,14 @@ def chat_with_bot(message, thread_id=None):
     if response.status_code == 200:
         result = response.json()
         print(f"Bot: {result['response']}")
-        return result['thread_id']
+        return result['thread_id'], result['user_id']
     else:
         print(f"Error: {response.text}")
-        return None
+        return None, None
 
 # Usage examples:
 user_id, thread_id = chat_with_bot("What is the price of butter from Belgium?")
-thread_id = chat_with_bot("Compare the average prices of milk and butter this year", thread_id)
+user_id, thread_id = chat_with_bot("Compare the average prices of milk and butter this year", user_id, thread_id)
 
 
 '''

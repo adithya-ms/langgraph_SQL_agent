@@ -96,8 +96,6 @@ def get_schema(database_url: str, table_name: str):
         engine.dispose()
 
 def main():
-    breakpoint()
-    
     csv_path = os.path.join("data","case_data.csv")
     table_name = "price_food_commodities"
     database_url = "postgresql+psycopg2://adithya@localhost:5432/price_db"
