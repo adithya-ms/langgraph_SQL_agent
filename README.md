@@ -16,7 +16,7 @@ An A.I time series analyst to provide insights into price data based off user re
 
 All MRs generally should go to the `development` branch. The strategy is:
 - We only have short-lived, small branches ideally.
-- Deploy very frequently (all merged MRs are automatically deployed).
+- Deploy very frequently 
 - Always keep the special branches in a fully functional state.
 - Any critical bugs should be solved or defused, before other things.
 
@@ -30,4 +30,5 @@ All MRs generally should go to the `development` branch. The strategy is:
 3. Run: uv run langgraph dev
 4. This opens a LangGraph Studio (does not work on Safari, choose a different browser)
 5. Go to studio in the left pannel and you can then access the interface.
+
 
