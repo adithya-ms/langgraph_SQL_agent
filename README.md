@@ -26,3 +26,8 @@ All MRs generally should go to the `development` branch. The strategy is:
    - LangGraph studio - this will be setup as a part of env
    - OpenAI API Key
    - LangSmith API key
+2. In app/studio/.env - place the OpenAI and Langsmith API Keys
+3. Run: uv run langgraph dev
+4. This opens a LangGraph Studio (does not work on Safari, choose a different browser)
+5. Go to studio in the left pannel and you can then access the interface.
+
